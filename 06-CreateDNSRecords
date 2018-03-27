@@ -1,0 +1,31 @@
+# Same BaseDomainFQDN as earlier. I could put this in the teamconfig but I'm tired and feeling lazy, and i'm quite happy to make this your problem now.
+$BaseDomainFQDN="contoso.com"
+
+# You should understand this line by now.
+$TeamConfig=Import-Clixml -Path .\TeamConfig.xml
+
+# Add the team DNS Zone to the AD DNS server
+Add-DnsServerPrimaryZone -Name "team$($TeamConfig.TeamNumber).$($BaseDomainFQDN)" -ReplicationScope "Forest"
+$NewZone=Get-DNSServerZone "team$($TeamConfig.TeamNumber).$($BaseDomainFQDN)"
+# Example of mail server records
+Add-DnsServerResourceRecord -ZoneName $NewZone.ZoneName -Passthru -A -Name "mailserver0" -ipv4address "172.16.$($TeamConfig.TeamNumber).71"
+Add-DnsServerResourceRecordMX -ZoneName $NewZone.ZoneName -Passthru`
+	-MailExchange "mailserver0.team$($TeamConfig.TeamNumber).$($BaseDomainFQDN)" -TimeToLive 01:00:00 `
+	-Preference 10 -Name "."
+Add-DnsServerResourceRecordCName -Name "mail" -HostNameAlias "mailserver0.team$($TeamConfig.TeamNumber).$($BaseDomainFQDN)"	
+	-ZoneName $NewZone.ZoneName -Passthru
+Add-DnsServerResourceRecordCName -Name "webmail" -HostNameAlias "mailserver0.team$($TeamConfig.TeamNumber).$($BaseDomainFQDN)"`
+	-ZoneName $NewZone.ZoneName -Passthru
+
+# 'NS1' record
+Add-DnsServerResourceRecord -ZoneName $NewZone.ZoneName -Passthru -A -Name "ns1" -ipv4address "172.16.$($TeamConfig.TeamNumber).66"
+
+# Basic host example
+$host='host0'
+Add-DnsServerResourceRecord -ZoneName $NewZone.ZoneName -Passthru -A -Name $host -ipv4address "172.16.$($TeamConfig.TeamNumber).70"
+
+# Host with CNAME
+$host='host1'
+Add-DnsServerResourceRecord -ZoneName $NewZone.ZoneName -Passthru -A -Name $host -ipv4address "172.16.$($TeamConfig.TeamNumber).69"
+Add-DnsServerResourceRecordCName -Name "www" -HostNameAlias "$($host).team$($TeamConfig.TeamNumber).$($BaseDomainFQDN)"`
+    -ZoneName $NewZone.ZoneName -Passthru
