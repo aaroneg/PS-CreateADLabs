@@ -1,0 +1,14 @@
+# Change this. 
+$SafeModeAdminPassword='P@ssw0rd2'
+
+# Change to the script directory
+Set-Location $PSScriptRoot
+
+# Import our config from XML file on disk
+$TeamConfig=Import-Clixml -Path .\TeamConfig.xml
+
+# Instruct windows to install the AD features needed 
+Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
+
+# Install the domain with a very bad password for the safe-mode administrator
+Install-ADDSForest -DomainName $TeamConfig.DomainName -SafeModeAdministratorPassword ($SafeModeAdminPassword|ConvertTo-SecureString -AsPlainText -Force) -installDNS -ForestMode Win2008 -DomainMode Win2008 -Force
