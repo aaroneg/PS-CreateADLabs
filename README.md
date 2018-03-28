@@ -1,5 +1,5 @@
 # PS-CreateLabVMs
-General sequence of scripts you might use to create and Active Directory environment for a lab, especially if you have to replicate that lab with slight changes if you're running many instances at once.
+General sequence of scripts you might use to create an Active Directory environment for a lab, especially if you have to replicate that lab with slight changes if you're running many instances at once.
 
 * These scripts have been slightly modified (and not tested) from an actual instance where I've needed to create a set of labs.
 * You should not pull them down and expect them to work perfectly for you, especially if you don't test them before using them for your real production run
