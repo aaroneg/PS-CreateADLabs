@@ -8,3 +8,6 @@ General sequence of scripts you might use to create an Active Directory environm
 You'll need your own set of usernames for '.\Names.csv', with the column header: `first,last,title`. There can be as many usernames as you want.
 
 **WARNING** This will not create a totally realistic AD environment - normal AD environments actually fill out things like who a person's supervisor is and other organizational details like address, phone numbers, etc. This is only sufficient for labs where those things are not a requirement
+
+# Notes
+This was tested on a Windows Server 2016 VM. It may work with 2012r2 but I make no guarantees on anything earlier than that.
