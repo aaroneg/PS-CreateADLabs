@@ -1,0 +1,1 @@
+Install-windowsfeature dhcp
